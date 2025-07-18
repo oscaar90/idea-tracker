@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+    <title>Mis Ideas</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Ideas</h1>
+    <a href="/nueva">Nueva idea</a>
+    <ul>
+        {% for idea in ideas %}
+            <li>
+                <strong>{{ idea['titulo'] }}</strong> - {{ idea['estado'] }}  
+                <a href="/editar/{{ idea['id'] }}">Editar</a>  
+                <form action="/eliminar/{{ idea['id'] }}" method="POST" style="display:inline;">
+                    <button type="submit">Eliminar</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

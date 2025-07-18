@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+    <title>Editar Idea</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Editar Idea</h1>
+    <form method="POST">
+        <p><strong>Título:</strong> {{ idea['titulo'] }}</p>
+
+        <p><label>Resumen:</label><br>
+        <textarea name="resumen" rows="4" cols="50">{{ idea['resumen'] }}</textarea></p>
+
+        <p><label>README (Notas detalladas):</label><br>
+        <textarea name="readme" rows="8" cols="50">{{ idea['readme'] }}</textarea></p>
+
+        <p><label>Estado:</label><br>
+        <select name="estado">
+            <option value="PENDIENTE" {% if idea['estado'] == 'PENDIENTE' %}selected{% endif %}>PENDIENTE</option>
+            <option value="EN CURSO" {% if idea['estado'] == 'EN CURSO' %}selected{% endif %}>EN CURSO</option>
+            <option value="COMPLETADA" {% if idea['estado'] == 'COMPLETADA' %}selected{% endif %}>COMPLETADA</option>
+        </select></p>
+
+        <p><input type="submit" value="Guardar cambios"></p>
+    </form>
+
+    <p><a href="/">Volver a la lista de ideas</a></p>
+</body>
+</html>
