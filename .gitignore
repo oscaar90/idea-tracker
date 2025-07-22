@@ -23,6 +23,7 @@ var/
 *.egg
 pip-log.txt
 pip-delete-this-directory.txt
-
 # VS Code
 .vscode/
+# Base de datos SQLite
+*.db

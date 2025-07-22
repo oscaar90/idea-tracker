@@ -1,5 +1,21 @@
 from flask import Flask, render_template, request, redirect
 import sqlite3
+# Crear la base de datos si no existe
+DB_NAME = "idea.db"
+if not os.path.exists(DB_NAME):
+    conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+    c.execute('''
+        CREATE TABLE ideas (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            idea TEXT NOT NULL,
+            resumen TEXT,
+            estado TEXT DEFAULT 'EN CURSO',
+            readme TEXT
+        )
+    ''')
+    conn.commit()
+    conn.close()
 
 app = Flask(__name__)
 DATABASE = 'ideas.db'
@@ -12,7 +28,17 @@ def get_db():
 @app.route('/')
 def index():
     db = get_db()
-    ideas = db.execute('SELECT * FROM ideas ORDER BY fecha_creacion DESC').fetchall()
+    ideas = db.execute('''
+    SELECT * FROM ideas
+    ORDER BY 
+        CASE estado 
+            WHEN 'COMPLETADA' THEN 1
+            WHEN 'EN CURSO' THEN 2
+            WHEN 'PENDIENTE' THEN 3
+        END,
+        fecha_creacion DESC
+''').fetchall()
+
     return render_template('index.html', ideas=ideas)
 
 @app.route('/nueva', methods=['GET', 'POST'])
