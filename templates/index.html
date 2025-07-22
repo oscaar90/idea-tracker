@@ -1,22 +1,127 @@
 <!doctype html>
-<html>
+<html lang="es">
 <head>
-    <title>Mis Ideas</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <title>Ideas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+   <style>
+    body {
+        background-color: #1e1e2f;
+        color: #e0e0e0;
+        font-family: system-ui, sans-serif;
+    }
+
+    .container {
+        background-color: #2c2c3c;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+        color: #f8f9fa;
+        margin-bottom: 1.5rem;
+    }
+
+    .list-group-item {
+        background-color: #333344;
+        color: #e0e0e0;
+        border: 1px solid #444455;
+        border-radius: 0.75rem;
+        margin-bottom: 1rem;
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background-color 0.2s ease;
+    }
+
+    .list-group-item:hover {
+        background-color: #3a3a4d;
+    }
+
+.btn-edit {
+    background-color: #4a90e2;
+    color: white;
+    border-radius: 0.5rem;
+    padding: 0.4rem 1rem;
+    margin-right: 0.5rem;
+    transition: 0.2s;
+    border: none;
+}
+.btn-edit:hover {
+    background-color: #357abf;
+}
+
+.btn-delete {
+    background-color: #e57373;
+    color: white;
+    border-radius: 0.5rem;
+    padding: 0.4rem 1rem;
+    transition: 0.2s;
+    border: none;
+}
+.btn-delete:hover {
+    background-color: #c75a5a;
+}
+
+
+    .btn-success {
+        background-color: #198754;
+        border: none;
+        border-radius: 0.5rem;
+        padding: 0.5rem 1.2rem;
+    }
+
+    .btn-success:hover {
+        background-color: #157347;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .estado-pendiente {
+        color: #ffc107;
+    }
+    .estado-curso {
+        color: #0dcaf0;
+    }
+    .estado-completada {
+        color: #198754;
+    }
+</style>
+
 </head>
 <body>
-    <h1>Ideas</h1>
-    <a href="/nueva">Nueva idea</a>
-    <ul>
-        {% for idea in ideas %}
-            <li>
-                <strong>{{ idea['titulo'] }}</strong> - {{ idea['estado'] }}  
-                <a href="/editar/{{ idea['id'] }}">Editar</a>  
-                <form action="/eliminar/{{ idea['id'] }}" method="POST" style="display:inline;">
-                    <button type="submit">Eliminar</button>
-                </form>
-            </li>
-        {% endfor %}
-    </ul>
+    <div class="container mt-5">
+        <h1 class="mb-4">📝 Ideas</h1>
+        <a href="/nueva" class="btn btn-success mb-4">➕ Nueva idea</a>
+        <ul class="list-group">
+            {% for idea in ideas %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
+                        <strong>{{ idea['titulo'] }}</strong> 
+                         <span>– {{ idea['fecha_creacion'][:10] }}</span>
+
+                        <span class="
+                            {% if idea['estado'] == 'PENDIENTE' %}estado-pendiente{% endif %}
+                            {% if idea['estado'] == 'EN CURSO' %}estado-curso{% endif %}
+                            {% if idea['estado'] == 'COMPLETADA' %}estado-completada{% endif %}
+                        ">
+                        {{ idea['estado'] }}
+                        </span>
+                    </span>
+                    <div class="btn-group">
+                        <a href="/editar/{{ idea['id'] }}" class="btn btn-sm btn-edit">Editar</a>
+                        <form action="/eliminar/{{ idea['id'] }}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-delete">Eliminar</button>
+                        </form>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 </body>
 </html>
+
