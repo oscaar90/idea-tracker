@@ -44,6 +44,10 @@
                     <option value="COMPLETADA" {% if idea['estado'] == 'COMPLETADA' %}selected{% endif %}>COMPLETADA</option>
                 </select>
             </div>
+            <div class="mb-3">
+                <label class="form-label">Fecha prevista de entrega (opcional)</label>
+                <input type="date" name="fecha_prevista_entrega" class="form-control" value="{{ idea['fecha_prevista_entrega'] or '' }}">
+            </div>
             <button type="submit" class="btn btn-primary">Guardar cambios</button>
             <a href="/" class="btn btn-secondary">Volver</a>
         </form>

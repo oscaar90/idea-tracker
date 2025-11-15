@@ -1,17 +1,22 @@
 from flask import Flask, render_template, request, redirect
 import sqlite3
+import os
+from datetime import datetime
+
 # Crear la base de datos si no existe
-DB_NAME = "idea.db"
+DB_NAME = "ideas.db"
 if not os.path.exists(DB_NAME):
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
     c.execute('''
         CREATE TABLE ideas (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            idea TEXT NOT NULL,
+            titulo TEXT NOT NULL,
             resumen TEXT,
-            estado TEXT DEFAULT 'EN CURSO',
-            readme TEXT
+            estado TEXT DEFAULT 'PENDIENTE',
+            readme TEXT,
+            fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            fecha_prevista_entrega DATE
         )
     ''')
     conn.commit()
@@ -47,11 +52,16 @@ def nueva():
     if request.method == 'POST':
         titulo = request.form['titulo']
         resumen = request.form['resumen']
-        estado = request.form['estado']
-        en_curso = db.execute("SELECT COUNT(*) FROM ideas WHERE estado = 'EN CURSO'").fetchone()[0]
-        if estado == 'EN CURSO' and en_curso >= 1:
-            return "❌ Ya tienes una idea en curso."
-        db.execute('INSERT INTO ideas (titulo, resumen, estado) VALUES (?, ?, ?)', (titulo, resumen, estado))
+        readme = request.form.get('readme', '')
+        estado = request.form.get('estado', 'PENDIENTE')
+        fecha_prevista = request.form.get('fecha_prevista_entrega', None)
+
+        # Convertir cadena vacía a None para la base de datos
+        if fecha_prevista == '':
+            fecha_prevista = None
+
+        db.execute('INSERT INTO ideas (titulo, resumen, readme, estado, fecha_prevista_entrega) VALUES (?, ?, ?, ?, ?)',
+                   (titulo, resumen, readme, estado, fecha_prevista))
         db.commit()
         return redirect('/')
     return render_template('nueva.html')
@@ -61,13 +71,18 @@ def editar(id):
     db = get_db()
     idea = db.execute('SELECT * FROM ideas WHERE id = ?', (id,)).fetchone()
     if request.method == 'POST':
+        titulo = request.form['titulo']
         resumen = request.form['resumen']
         readme = request.form['readme']
         estado = request.form['estado']
-        en_curso = db.execute("SELECT COUNT(*) FROM ideas WHERE estado = 'EN CURSO' AND id != ?", (id,)).fetchone()[0]
-        if estado == 'EN CURSO' and en_curso >= 1:
-            return "❌ Ya tienes otra idea en curso."
-        db.execute('UPDATE ideas SET resumen = ?, readme = ?, estado = ? WHERE id = ?', (resumen, readme, estado, id))
+        fecha_prevista = request.form.get('fecha_prevista_entrega', None)
+
+        # Convertir cadena vacía a None para la base de datos
+        if fecha_prevista == '':
+            fecha_prevista = None
+
+        db.execute('UPDATE ideas SET titulo = ?, resumen = ?, readme = ?, estado = ?, fecha_prevista_entrega = ? WHERE id = ?',
+                   (titulo, resumen, readme, estado, fecha_prevista, id))
         db.commit()
         return redirect('/')
     return render_template('editar.html', idea=idea)
