@@ -101,7 +101,7 @@
             {% for idea in ideas %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <span>
-                        <strong>{{ idea['titulo'] }}</strong> 
+                        <strong>{{ idea['titulo'] }}</strong>
                          <span>– {{ idea['fecha_creacion'][:10] }}</span>
 
                         <span class="
@@ -111,6 +111,12 @@
                         ">
                         {{ idea['estado'] }}
                         </span>
+
+                        {% if idea['fecha_prevista_entrega'] %}
+                        <span style="color: #9ca3af; font-size: 0.9em;">
+                            📅 Entrega: {{ idea['fecha_prevista_entrega'] }}
+                        </span>
+                        {% endif %}
                     </span>
                     <div class="btn-group">
                         <a href="/editar/{{ idea['id'] }}" class="btn btn-sm btn-edit">Editar</a>
